@@ -110,15 +110,14 @@
 
                 const areas = g.selectAll(".area").data(objs.features);
 
+                areas.exit().remove();
+
                 areas
                     .enter()
                     .append("path")
+                    .merge(areas)
                     .attr("class", "area")
                     .attr("d", path);
-
-                areas
-                    .exit()
-                    .remove();
             }
         </script>
     </body>
