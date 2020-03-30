@@ -115,6 +115,10 @@
                     .append("path")
                     .attr("class", "area")
                     .attr("d", path);
+
+                areas
+                    .exit()
+                    .remove();
             }
         </script>
     </body>
