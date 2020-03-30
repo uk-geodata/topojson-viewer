@@ -88,7 +88,6 @@
             function drawmap(json_data) {
                 const width = 600;
                 const height = 600;
-                console.log(json_data);
 
                 const svg = d3
                     .select("#viewer")
@@ -104,9 +103,6 @@
                     .translate([0, 0]);
 
                 const path = d3.geoPath().projection(projection);
-
-                console.log(Object.keys(json_data));
-                console.log(Object.keys(json_data.objects));
 
                 const objs = topojson.feature(json_data, json_data.objects[Object.keys(json_data.objects)[0]]);
 
