@@ -59,11 +59,7 @@
 
             const g = svg.append("g");
 
-            const projection = d3
-                .geoAlbers()
-                .rotate([0, 0])
-                .scale(1)
-                .translate([0, 0]);
+            const projection = d3.geoIdentity().reflectY(true);
 
             const path = d3.geoPath().projection(projection);
 
@@ -92,7 +88,6 @@
 
                     const dt = e.dataTransfer;
                     const fileList = dt.files;
-                    console.log(fileList);
 
                     const reader = new FileReader();
                     reader.onload = e => {
