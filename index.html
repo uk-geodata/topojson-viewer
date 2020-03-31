@@ -9,23 +9,28 @@
             html,
             body,
             * {
-                width: 100%;
-                height: 100%;
                 margin: 0;
                 box-sizing: border-box;
                 font-family: Arial, Helvetica, sans-serif;
             }
 
             #container {
+                height: 100vh;
                 display: grid;
                 grid-template-columns: 2fr 1fr;
-                grid-column-gap: 20px;
+                grid-gap: 20px;
             }
 
             .area {
                 stroke: black;
                 stroke-width: 0.5px;
-                fill: none;
+                fill: white;
+            }
+
+            .selected {
+                stroke: red;
+                stroke-width: 1px;
+                fill: pink;
             }
 
             #dropzone {
@@ -37,6 +42,27 @@
                 padding: 20px;
                 font-size: 3em;
             }
+
+            #details {
+                position: fixed;
+                top: 20px;
+                left: 20px;
+                background-color: #eee;
+                border-radius: 10px;
+                display: none;
+            }
+
+            #props {
+                height: initial;
+                padding: 5px;
+                border-collapse: collapse;
+            }
+
+            #props tr,
+            #props td {
+                border: 1px solid black;
+                padding: 5px;
+            }
         </style>
     </head>
     <body>
@@ -45,6 +71,9 @@
             <div id="dropzone">
                 <p>Drop file here to view</p>
             </div>
+        </div>
+        <div id="details">
+            <table id="props"></table>
         </div>
         <script src="//unpkg.com/d3"></script>
         <script src="//unpkg.com/topojson"></script>
@@ -62,6 +91,7 @@
             const projection = d3.geoIdentity().reflectY(true);
 
             const path = d3.geoPath().projection(projection);
+            let active = d3.select(null);
 
             let dropzone = document.getElementById("dropzone");
             dropzone.addEventListener(
@@ -112,7 +142,34 @@
                     .append("path")
                     .merge(areas)
                     .attr("class", "area")
-                    .attr("d", path);
+                    .attr("d", path)
+                    .on("click", (d, i, n) => {
+                        d3.selectAll(".selected").classed("selected", false);
+                        d3.select("#details").style("display", "none");
+                        clearProperties();
+                        if (active.node() !== d3.select(n[i]).node()) {
+                            active = d3.select(n[i]);
+                            active.classed("selected", true);
+                            d3.select("#details").style("display", "block");
+                            Object.keys(d.properties).forEach(k => {
+                                addProperty(k, d.properties[k]);
+                            });
+                        } else {
+                            active = d3.select(null);
+                        }
+                    });
+            }
+
+            function clearProperties() {
+                let rows = d3.selectAll("#props tr");
+                rows.remove();
+            }
+
+            function addProperty(k, v) {
+                let table = d3.select("#props");
+                let row = table.append("tr");
+                row.append("td").text(k);
+                row.append("td").text(v);
             }
         </script>
     </body>
